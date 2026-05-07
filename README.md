@@ -81,6 +81,12 @@ cd client && npm run dev
 
 ## Деплой на Vercel + Render + Neon
 
+Текущие production URL:
+
+- Frontend: https://sms-manager-alpha.vercel.app
+- Backend API: https://sms-aggregator-prices-api.onrender.com
+- Swagger: https://sms-aggregator-prices-api.onrender.com/api/docs
+
 ### 1. Neon PostgreSQL
 
 1. Создать бесплатный проект в Neon.
@@ -92,7 +98,7 @@ cd client && npm run dev
 Backend деплоится из корня репозитория. В Render можно создать сервис через `render.yaml` или вручную:
 
 ```bash
-Build Command: npm ci && npm run build
+Build Command: npm ci --include=dev && npm run build
 Start Command: npm run start:prod
 ```
 
