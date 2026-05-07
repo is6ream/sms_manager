@@ -25,6 +25,12 @@ export class CreateRouteDto {
   @MaxLength(255)
   country: string;
 
+  @ApiProperty({ example: 'Beeline', description: 'Оператор связи', required: false })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  operator?: string;
+
   @ApiProperty({ enum: RouteType, description: 'Тип маршрута' })
   @IsEnum(RouteType)
   routeType: RouteType;

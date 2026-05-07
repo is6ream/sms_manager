@@ -38,6 +38,10 @@ export class Route {
   @Column({ length: 255 })
   country: string;
 
+  @ApiProperty({ example: 'Beeline', description: 'Оператор связи', required: false })
+  @Column({ length: 255, nullable: true })
+  operator: string | null;
+
   @ApiProperty({ enum: RouteType, description: 'Тип маршрута' })
   @Column({ type: 'enum', enum: RouteType })
   routeType: RouteType;

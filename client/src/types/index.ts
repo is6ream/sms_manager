@@ -12,6 +12,7 @@ export interface Route {
   providerId: string;
   provider: Provider;
   country: string;
+  operator: string | null;
   routeType: RouteType;
   price: string;
   currency: string;
@@ -34,6 +35,7 @@ export interface CreateProviderDto {
 export interface CreateRouteDto {
   providerId: string;
   country: string;
+  operator?: string;
   routeType: RouteType;
   price: number;
   currency?: string;
