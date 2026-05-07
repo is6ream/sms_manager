@@ -1,24 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 import ChatWidget from './ChatWidget';
-
-interface NavSection {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  children: { to: string; label: string }[];
-}
-
-const ChevronIcon = ({ open }: { open: boolean }) => (
-  <svg
-    className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-  </svg>
-);
+import { useTheme } from '../context/ThemeContext';
 
 const BellIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,140 +16,98 @@ const SupportIcon = () => (
   </svg>
 );
 
-const RoutesIcon = () => (
+const SunIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
   </svg>
 );
 
-const ProvidersIcon = () => (
+const MoonIcon = () => (
   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
   </svg>
 );
 
-const ImportIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-  </svg>
-);
-
-const NAV_SECTIONS: NavSection[] = [
+const NAV_ITEMS = [
   {
-    id: 'routing',
-    label: 'Маршрутизация',
-    icon: <RoutesIcon />,
-    children: [
-      { to: '/routes', label: 'Маршруты' },
-      { to: '/providers', label: 'Поставщики' },
-    ],
+    to: '/routes',
+    label: 'Маршруты',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+      </svg>
+    ),
   },
   {
-    id: 'import',
-    label: 'Импорт',
-    icon: <ImportIcon />,
-    children: [
-      { to: '/import', label: 'Импорт Excel' },
-    ],
+    to: '/import',
+    label: 'Импорт Excel',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+      </svg>
+    ),
   },
-];
-
-function NavSection({ section }: { section: NavSection }) {
-  const location = useLocation();
-  const isAnyChildActive = section.children.some((c) => location.pathname === c.to);
-  const [open, setOpen] = useState(isAnyChildActive || section.children.length <= 2);
-
-  return (
-    <div>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-left text-sm transition-colors ${
-          isAnyChildActive
-            ? 'text-indigo-700 bg-indigo-50 font-medium'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-        }`}
-      >
-        <span className="flex items-center gap-2.5">
-          <span className={isAnyChildActive ? 'text-indigo-600' : 'text-gray-400'}>
-            {section.icon}
-          </span>
-          {section.label}
-        </span>
-        <ChevronIcon open={open} />
-      </button>
-
-      {open && (
-        <div className="mt-0.5 ml-4 pl-3 border-l border-gray-200 space-y-0.5">
-          {section.children.map((child) => (
-            <NavLink
-              key={child.to}
-              to={child.to}
-              className={({ isActive }) =>
-                `block px-3 py-1.5 rounded-md text-sm transition-colors ${
-                  isActive
-                    ? 'text-indigo-700 bg-indigo-50 font-medium'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                }`
-              }
-            >
-              {child.label}
-            </NavLink>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+] as const;
 
 const PAGE_TITLES: Record<string, string> = {
   '/routes': 'Маршруты',
-  '/providers': 'Поставщики',
   '/import': 'Импорт Excel',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const pageTitle = PAGE_TITLES[location.pathname] ?? 'SMS Prices';
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-slate-900">
       {/* Top utility bar */}
-      <header className="h-11 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-10">
+      <header className="h-11 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 shrink-0 z-10">
         <div className="w-48 shrink-0" />
-        <div className="flex items-center gap-6 text-xs text-gray-500 ml-auto">
-          <button className="flex items-center gap-1.5 hover:text-gray-800 transition-colors">
+        <div className="flex items-center gap-6 text-xs text-gray-500 dark:text-gray-400 ml-auto">
+          <button className="flex items-center gap-1.5 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
             <BellIcon />
             Уведомления
           </button>
-          <button className="flex items-center gap-1.5 hover:text-gray-800 transition-colors">
+          <button className="flex items-center gap-1.5 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
             <SupportIcon />
             Поддержка
           </button>
-          <span className="text-gray-300">|</span>
-          <span className="text-gray-600 font-medium">admin@sms-prices.ru</span>
+          <span className="text-gray-300 dark:text-gray-600">|</span>
+          <span className="text-gray-600 dark:text-gray-300 font-medium">admin@sms-prices.ru</span>
+          <span className="text-gray-300 dark:text-gray-600">|</span>
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+            className="flex items-center gap-1.5 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+            {theme === 'dark' ? 'Светлая' : 'Тёмная'}
+          </button>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left sidebar */}
-        <aside className="w-48 bg-white border-r border-gray-200 flex flex-col shrink-0">
+        <aside className="w-48 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0">
           {/* Logo */}
-          <div className="h-12 flex items-center px-4 border-b border-gray-100">
+          <div className="h-12 flex items-center px-4 border-b border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
                 <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold text-gray-900">SMS Prices</span>
+              <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">SMS Prices</span>
             </div>
           </div>
 
           {/* Search */}
-          <div className="px-3 py-3 border-b border-gray-100">
+          <div className="px-3 py-3 border-b border-gray-100 dark:border-gray-700">
             <div className="relative">
               <svg
                 className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400"
@@ -181,15 +121,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <input
                 type="text"
                 placeholder="Поиск в меню"
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-indigo-400 focus:bg-white transition-colors placeholder-gray-400"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:border-indigo-400 focus:bg-white dark:focus:bg-gray-700 transition-colors placeholder-gray-400 dark:text-gray-300 dark:placeholder-gray-500"
               />
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1">
-            {NAV_SECTIONS.map((section) => (
-              <NavSection key={section.id} section={section} />
+          <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
+            {NAV_ITEMS.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
+                    isActive
+                      ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950 dark:text-indigo-400 font-medium'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <span className={isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'}>
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </>
+                )}
+              </NavLink>
             ))}
           </nav>
         </aside>
@@ -197,8 +156,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Main content */}
         <main className="flex-1 overflow-auto">
           {/* Page title bar */}
-          <div className="bg-white border-b border-gray-200 px-6 py-3">
-            <h1 className="text-indigo-700 text-lg font-semibold">{pageTitle}</h1>
+          <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+            <h1 className="text-indigo-600 dark:text-indigo-400 text-lg font-semibold">{pageTitle}</h1>
           </div>
 
           <div className="p-6">

@@ -33,13 +33,18 @@ cp .env.example .env
 ```
 
 ```env
+DATABASE_URL=
+DB_SSL=false
+
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5433
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 DB_NAME=sms_prices
 
 APP_PORT=3000
+CORS_ORIGIN=http://localhost:5173
+TYPEORM_SYNCHRONIZE=true
 
 PGADMIN_EMAIL=admin@admin.com
 PGADMIN_PASSWORD=admin
@@ -53,7 +58,7 @@ docker-compose up -d
 
 | Сервис    | URL                       | Логин                  | Пароль  |
 |-----------|---------------------------|------------------------|---------|
-| PostgreSQL| `localhost:5432`          | `postgres`             | `postgres` |
+| PostgreSQL| `localhost:5433`          | `postgres`             | `postgres` |
 | pgAdmin   | http://localhost:5050     | `admin@admin.com`      | `admin` |
 
 ### 4. Запустить приложение
@@ -74,9 +79,65 @@ cd client && npm run dev
 
 ---
 
+## Деплой на Vercel + Render + Neon
+
+### 1. Neon PostgreSQL
+
+1. Создать бесплатный проект в Neon.
+2. Скопировать строку подключения PostgreSQL из раздела **Connection string**.
+3. Для Render использовать ее как переменную `DATABASE_URL`.
+
+### 2. Render backend
+
+Backend деплоится из корня репозитория. В Render можно создать сервис через `render.yaml` или вручную:
+
+```bash
+Build Command: npm ci && npm run build
+Start Command: npm run start:prod
+```
+
+Переменные окружения для Render:
+
+```env
+NODE_ENV=production
+DATABASE_URL=postgresql://...
+DB_SSL=true
+TYPEORM_SYNCHRONIZE=true
+CORS_ORIGIN=https://your-vercel-project.vercel.app
+GROQ_API_KEY=
+```
+
+Render сам передает `PORT`, поэтому вручную задавать его не нужно.
+
+### 3. Vercel frontend
+
+Frontend деплоится из папки `client`.
+
+Настройки проекта Vercel:
+
+```bash
+Root Directory: client
+Build Command: npm run build
+Output Directory: dist
+```
+
+Переменная окружения для Vercel:
+
+```env
+VITE_API_URL=https://your-render-service.onrender.com
+```
+
+После первого деплоя Vercel скопируйте домен фронтенда и добавьте его в `CORS_ORIGIN` на Render.
+
+### 4. Автодеплой
+
+Подключите GitHub-репозиторий в Vercel и Render. После `git push` Vercel пересоберет frontend из `client`, а Render пересоберет backend из корня проекта.
+
+---
+
 ## Фронтенд
 
-React + Vite + Tailwind SPA. Проксирует запросы к API через Vite dev-сервер, поэтому CORS не нужен в режиме разработки.
+React + Vite + Tailwind SPA. В режиме разработки проксирует запросы к API через Vite dev-сервер. На Vercel использует `VITE_API_URL`.
 
 Экраны:
 - **Поставщики** — список агрегаторов, добавление, редактирование, удаление

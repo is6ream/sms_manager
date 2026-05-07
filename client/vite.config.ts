@@ -9,6 +9,7 @@ export default defineConfig({
       '/providers': 'http://localhost:3000',
       '/routes': 'http://localhost:3000',
       '/import': 'http://localhost:3000',
+      '/chat': 'http://localhost:3000',
     },
   },
 });

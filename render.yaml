@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: sms-aggregator-prices-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_SSL
+        value: "true"
+      - key: TYPEORM_SYNCHRONIZE
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

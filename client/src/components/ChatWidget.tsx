@@ -99,7 +99,6 @@ export default function ChatWidget() {
           </svg>
         )}
 
-        {/* Badge with country when route is active and widget is closed */}
         {!isOpen && activeRoute && (
           <span className="absolute -top-1.5 -left-1.5 bg-green-500 text-white text-xs rounded-full px-1.5 py-0.5 leading-none font-medium max-w-20 truncate">
             {activeRoute.country}
@@ -109,8 +108,10 @@ export default function ChatWidget() {
 
       {/* Chat panel */}
       {isOpen && (
-        <div className="fixed bottom-20 right-6 z-50 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
-          style={{ height: 420 }}>
+        <div
+          className="fixed bottom-20 right-6 z-50 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden"
+          style={{ height: 420 }}
+        >
           {/* Header */}
           <div className="bg-indigo-600 px-4 py-3 flex items-center justify-between shrink-0">
             <div>
@@ -138,12 +139,12 @@ export default function ChatWidget() {
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
             {messages.length === 0 && (
               <div className="text-center mt-6">
-                <p className="text-gray-400 text-xs">Спросите, например:</p>
+                <p className="text-gray-400 dark:text-gray-500 text-xs">Спросите, например:</p>
                 {PLACEHOLDER_EXAMPLES.map((ex) => (
                   <button
                     key={ex}
                     onClick={() => setInput(ex)}
-                    className="block w-full mt-1.5 text-xs text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-md px-2 py-1 transition-colors text-left"
+                    className="block w-full mt-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950 rounded-md px-2 py-1 transition-colors text-left"
                   >
                     «{ex}»
                   </button>
@@ -157,7 +158,7 @@ export default function ChatWidget() {
                   className={`max-w-xs px-3 py-2 rounded-xl text-xs leading-relaxed whitespace-pre-wrap ${
                     msg.role === 'user'
                       ? 'bg-indigo-600 text-white rounded-br-sm'
-                      : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-sm'
                   }`}
                 >
                   {msg.text}
@@ -167,7 +168,7 @@ export default function ChatWidget() {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-xl rounded-bl-sm px-3 py-2">
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-xl rounded-bl-sm px-3 py-2">
                   <span className="flex gap-1">
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -181,7 +182,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Input */}
-          <div className="border-t border-gray-100 px-3 py-2.5 shrink-0 flex gap-2 items-center">
+          <div className="border-t border-gray-100 dark:border-gray-700 px-3 py-2.5 shrink-0 flex gap-2 items-center">
             <input
               ref={inputRef}
               type="text"
@@ -190,7 +191,7 @@ export default function ChatWidget() {
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               disabled={loading}
-              className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 placeholder-gray-300 disabled:opacity-50 transition-colors"
+              className="flex-1 text-xs border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 placeholder-gray-300 dark:placeholder-gray-500 disabled:opacity-50 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             />
             <button
               onClick={sendMessage}
